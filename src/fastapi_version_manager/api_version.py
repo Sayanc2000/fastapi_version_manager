@@ -18,6 +18,7 @@ class VersionInfo:
 
 class APIVersions:
     """Central version management"""
+    # TODO: to have support of external source for version defination
     VERSIONS: Dict[str, VersionInfo] = {}  # Empty dict that will be initialized by ManagedApp
 
     @classmethod

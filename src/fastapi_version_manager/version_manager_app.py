@@ -22,6 +22,7 @@ class ManagedApp(FastAPI):
         super().__init__()
         self.app = app
         self.prefix = prefix
+        # TODO: to be replaced later and be fetched from external source if provided
         self._initialize_versions(versions)
         self._setup_admin_route()
 

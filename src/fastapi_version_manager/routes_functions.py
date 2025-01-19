@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 
-def get_admin_handler(app: FastAPI):
+def get_admin_handler(app: FastAPI, versions):
     """
     Creates and returns an admin route handler for displaying FastAPI routes information.
 
@@ -19,6 +19,17 @@ def get_admin_handler(app: FastAPI):
             str: An HTML document containing a formatted list of all routes, including their
                 HTTP methods, paths, and names.
         """
+        # Get version information from app state
+        versions_html = ""
+        for version_no, version in versions.items():
+            versions_html += f"""
+            <div style="border: 1px solid #ddd; margin: 10px 0; padding: 15px;">
+                <div>
+                    <strong>Version: {version}</strong>
+                </div>
+            </div>
+            """
+
         routes_html = ""
         for route in app.routes:
             methods = ", ".join(route.methods) if route.methods else "N/A"
@@ -43,6 +54,9 @@ def get_admin_handler(app: FastAPI):
             </head>
             <body>
                 <h1>FastAPI Routes</h1>
+                <h2>API Versions</h2>
+                {versions_html}
+                <h2>All Routes</h2>
                 {routes_html}
             </body>
         </html>

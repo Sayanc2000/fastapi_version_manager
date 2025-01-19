@@ -26,6 +26,8 @@ jinja2==3.1.5
     # via fastapi-version-manager
 markupsafe==3.0.2
     # via jinja2
+packaging==24.2
+    # via fastapi-version-manager
 pydantic==2.10.5
     # via fastapi
 pydantic-core==2.27.2

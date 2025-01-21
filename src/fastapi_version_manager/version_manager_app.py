@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from datetime import date
+from typing import Dict
 
 from fastapi_version_manager.routes_functions import get_admin_handler
+from fastapi_version_manager.api_version import APIVersions, VersionInfo
 
 
 class ManagedApp(FastAPI):
@@ -15,11 +18,18 @@ class ManagedApp(FastAPI):
         prefix (str, optional): URL prefix for the admin interface. Defaults to "/admin"
     """
 
-    def __init__(self, app: FastAPI, prefix: str = "/admin"):
+    def __init__(self, app: FastAPI, versions: Dict[str, VersionInfo], prefix: str = "/admin"):
         super().__init__()
         self.app = app
         self.prefix = prefix
+        # TODO: to be replaced later and be fetched from external source if provided
+        self._initialize_versions(versions)
         self._setup_admin_route()
+
+    def _initialize_versions(self, versions: Dict[str, VersionInfo]):
+        """Initialize API versions with their metadata."""
+        
+        APIVersions.initialize_versions(versions)
 
     def _setup_admin_route(self):
         """Configure the admin interface route.
@@ -29,6 +39,15 @@ class ManagedApp(FastAPI):
         """
         self.app.add_api_route(
             self.prefix,
-            get_admin_handler(self.app),
+            get_admin_handler(self.app, APIVersions.VERSIONS),
             response_class=HTMLResponse,
         )
+
+    def _get_version_info(self, ver: str) -> VersionInfo:
+        return APIVersions.get_version_info(ver)
+
+    def _get_supported_versions(self) -> list[str]:
+        return APIVersions.get_supported_versions()
+
+    def _get_latest_version(self) -> str:
+        return APIVersions.get_latest_version()
